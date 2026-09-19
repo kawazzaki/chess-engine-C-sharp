@@ -22,7 +22,8 @@ DataHandlerCs="*uid://cj2tmclg81x77"
 
 [display]
 
-window/size/viewport_width=700
+window/size/viewport_width=648
+window/size/viewport_height=740
 
 [dotnet]
 

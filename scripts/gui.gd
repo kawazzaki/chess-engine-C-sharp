@@ -19,7 +19,7 @@ var piece_array : Array[Piece] = []
 
 var icon_offset : Vector2 = Vector2(39,39)
 
-var fen = "6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1"
+var fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 var piece_selected : Piece = null
 
@@ -36,6 +36,9 @@ func _ready() -> void:
 	
 	piece_array.resize(64)
 	piece_array.fill(null)
+	
+	#start game
+	reset_game()
 	
 func create_slot():
 	var new_slot : Slot = slot_scene.instantiate()
@@ -63,14 +66,24 @@ func _on_slot_clicked(slot : Slot):
 				print("Checkmate! You win.")
 			else:
 				print("Stalemate — draw.")
+			reset_game()
 			return
 
 		update_board(63-move[0],63-move[1])
+	
+		var human_is_black = not bot_is_black
+		if bitboard.call("IsCheckmate", human_is_black):
+			gameStart = false
+			print("Checkmate! Bot wins.")
+			reset_game()
 
 func update_board(from_loc, to_loc) -> void:
 	if piece_array[to_loc]:
 		if piece_array[to_loc].type%6 == 1:
 			gameStart = false
+			print("King captured — game over.")
+			reset_game()
+			return
 		piece_array[to_loc].queue_free()
 		piece_array[to_loc] = null
 		
