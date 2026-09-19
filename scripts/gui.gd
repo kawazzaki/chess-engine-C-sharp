@@ -10,13 +10,16 @@ extends Control
 @onready var GeneratePath = $GeneratePath
 @onready var ChessBot = $ChessBot
 
+@onready var slot_tex = preload("res://assets/new/square brown light_png_shadow_512px.png")
+
+
 var grid_array : Array[Slot] = []
 
 var piece_array : Array[Piece] = []
 
 var icon_offset : Vector2 = Vector2(39,39)
 
-var fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+var fen = "6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1"
 
 var piece_selected : Piece = null
 
@@ -29,7 +32,7 @@ func _ready() -> void:
 	for i in range(8):
 		for j in range(8):
 			if (i + j) % 2 == 0:
-				grid_array[i * 8 + j].set_background(Color.ALICE_BLUE)
+				grid_array[i * 8 + j].set_background(slot_tex)
 	
 	piece_array.resize(64)
 	piece_array.fill(null)
@@ -50,8 +53,18 @@ func _on_slot_clicked(slot : Slot):
 	clear_board_filter()
 	
 	if gameStart:
-		var bot_is_black = moved_piece_type < 6   # bot plays the opposite color of whatever you just moved
-		var move = PackedInt32Array(ChessBot.call("FindNextMove", bot_is_black))
+		var bot_is_black = moved_piece_type < 6
+		var result = ChessBot.call("FindNextMove", bot_is_black)
+		var move = PackedInt32Array(result)
+
+		if move.size() < 2:
+			gameStart = false
+			if bitboard.call("IsCheckmate", bot_is_black):
+				print("Checkmate! You win.")
+			else:
+				print("Stalemate — draw.")
+			return
+
 		update_board(63-move[0],63-move[1])
 
 func update_board(from_loc, to_loc) -> void:
@@ -175,6 +188,10 @@ func _on_button_pressed() -> void:
 
 
 func _on_button_2_pressed() -> void:
+	reset_game()
+
+
+func reset_game():
 	clear_board_filter()
 	clear_piece_array()
 	piece_selected = null
@@ -182,11 +199,15 @@ func _on_button_2_pressed() -> void:
 	bitboard.call("InitBitBoard",fen)
 	ChessBot.call("InitBot",bitboard)
 	gameStart = true
-	
-	
 
 func clear_piece_array():
 	for i in piece_array:
 		if i:
 			i.queue_free()
 	piece_array.fill(null)
+
+
+func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("mouse_right") && piece_selected:
+		piece_selected = null
+		clear_board_filter()

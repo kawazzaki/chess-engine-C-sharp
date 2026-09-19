@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://bi2e5cbksrnwa"]
 
 [ext_resource type="Script" uid="uid://eilg40xcbyw6" path="res://scripts/slot.gd" id="1_4v6ba"]
+[ext_resource type="Texture2D" uid="uid://brvavbo4dqi7l" path="res://assets/new/square brown dark_png_shadow_512px.png" id="1_ic0fu"]
 
-[node name="slot" type="ColorRect" unique_id=894726741]
+[node name="slot" type="TextureRect" unique_id=2015212151]
 custom_minimum_size = Vector2(78, 78)
-color = Color(1, 0.75686276, 1, 1)
+offset_right = 78.0
+offset_bottom = 78.0
+texture = ExtResource("1_ic0fu")
+expand_mode = 1
 script = ExtResource("1_4v6ba")
 
 [node name="filter" type="ColorRect" parent="." unique_id=663438699]

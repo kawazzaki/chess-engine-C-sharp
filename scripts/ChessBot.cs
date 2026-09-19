@@ -11,7 +11,7 @@ public partial class ChessBot : Node
 
 	public Bitboard currentboard;
 
-	public DataHandlerCs.Move currentMove = new(-1,-1);
+	public DataHandlerCs.Move currentMove = new(-1, -1);
 	public List<DataHandlerCs.Move> bestMoves = new();
 	public DataHandlerCs DH = new();
 	public Random rng = new();
@@ -21,26 +21,28 @@ public partial class ChessBot : Node
 		currentboard = board;
 	}
 
-	public int SearchMoves(bool isBlackMove,int depth,Bitboard searchboard,int alpha = int.MinValue+2,int beta = int.MaxValue )
+
+	public int SearchMoves(bool isBlackMove, int depth, Bitboard searchboard, int alpha = int.MinValue + 2, int beta = int.MaxValue)
 	{
 		searchCounter++;
-		if(depth == 0)
+		if (depth == 0)
 		{
-			return Evaluate(isBlackMove,searchboard);
+			return Evaluate(isBlackMove, searchboard);
 		}
-		List<DataHandlerCs.Move> moves = searchboard.GenerateMoveSet(isBlackMove);
+		List<DataHandlerCs.Move> moves = searchboard.GenerateLegalMoves(isBlackMove);
 
 		if (depth == maxDepth)
 			bestMoves.Clear();
 
-		foreach(DataHandlerCs.Move move in moves)
+		foreach (DataHandlerCs.Move move in moves)
 		{
+			//create virtual board (test all moves)
 			Bitboard newBoard = new();
-			newBoard.SetBoard(searchboard.whitePieces,searchboard.blackPieces);
-			newBoard.MakeMove(move,isBlackMove);
-			int evaluation = -SearchMoves(!isBlackMove,depth-1,newBoard,-beta,-alpha);
+			newBoard.SetBoard(searchboard.whitePieces, searchboard.blackPieces);
+			newBoard.MakeMove(move, isBlackMove); // apply move on the virtual board
+			int evaluation = -SearchMoves(!isBlackMove, depth - 1, newBoard, -beta, -alpha);
 
-			if(depth == maxDepth)
+			if (depth == maxDepth)
 			{
 				if (evaluation > alpha)
 				{
@@ -53,7 +55,7 @@ public partial class ChessBot : Node
 				}
 			}
 
-			alpha = Math.Max(evaluation,alpha);
+			alpha = Math.Max(evaluation, alpha);
 			if (evaluation >= beta)
 			{
 				return beta;
@@ -67,7 +69,15 @@ public partial class ChessBot : Node
 		searchCounter = 0;
 		maxDepth = 4;
 
-		SearchMoves(botIsBlack,maxDepth,currentboard);
+
+		List<DataHandlerCs.Move> legalMoves = currentboard.GenerateLegalMoves(botIsBlack);
+		if (legalMoves.Count == 0)
+		{
+			GD.Print("No legal moves for bot — game over.");
+			return null;
+		}
+
+		SearchMoves(botIsBlack, maxDepth, currentboard);
 
 		// Prefer captures among tied-best moves
 		ulong enemyBoard = botIsBlack ? currentboard.GetWhiteBitBoard() : currentboard.GetBlackBitBoard();
@@ -81,28 +91,34 @@ public partial class ChessBot : Node
 		List<DataHandlerCs.Move> pickFrom = captureMoves.Count > 0 ? captureMoves : bestMoves;
 		currentMove = pickFrom[rng.Next(pickFrom.Count)];
 
-		int[] nextMove = {currentMove.From,currentMove.To};
-		currentboard.MakeMove(currentMove,botIsBlack);
+		int[] nextMove = { currentMove.From, currentMove.To };
+		currentboard.MakeMove(currentMove, botIsBlack);
+
+		// NEW: check if the opponent (whoever moves next) is now checkmated
+		if (currentboard.IsCheckmate(!botIsBlack))
+		{
+			GD.Print("Checkmate!");
+		}
 
 		return nextMove;
 	}
 
 
-	public int Evaluate(bool isBlackMove,Bitboard searchboard)
+	public int Evaluate(bool isBlackMove, Bitboard searchboard)
 	{
 		int whiteValues = pieceValues(searchboard.whitePieces);
 		int blackValues = pieceValues(searchboard.blackPieces);
-		int evaluation = whiteValues- blackValues;
-		return isBlackMove? -evaluation : evaluation;
+		int evaluation = whiteValues - blackValues;
+		return isBlackMove ? -evaluation : evaluation;
 	}
 
 
 	public int pieceValues(ulong[] pieces)
 	{
 		int totalValue = 0;
-		for(int i=0; i < 6; i++)
+		for (int i = 0; i < 6; i++)
 		{
-			totalValue += BitOperations.PopCount(pieces[i])*DH.pieceValues[i];
+			totalValue += BitOperations.PopCount(pieces[i]) * DH.pieceValues[i];
 		}
 		return totalValue;
 	}

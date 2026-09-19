@@ -1,4 +1,4 @@
-extends ColorRect
+extends TextureRect
 
 class_name Slot
 
@@ -14,8 +14,8 @@ func _ready() -> void:
 	_set_filter()
 
 
-func set_background(c : Color) -> void:
-	color = c
+func set_background(tex : Texture2D) -> void:
+	texture = tex
 
 
 func _set_filter(color = Datahandler.slot_states.NONE):

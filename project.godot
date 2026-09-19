@@ -20,6 +20,10 @@ config/icon="res://assets/icon.svg"
 Datahandler="*uid://5cqxnihgdlwl"
 DataHandlerCs="*uid://cj2tmclg81x77"
 
+[display]
+
+window/size/viewport_width=700
+
 [dotnet]
 
 project/assembly_name="chess"
