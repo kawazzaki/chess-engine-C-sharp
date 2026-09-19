@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bi2e5cbksrnwa"]
+
+[ext_resource type="Script" uid="uid://eilg40xcbyw6" path="res://scripts/slot.gd" id="1_4v6ba"]
+
+[node name="slot" type="ColorRect" unique_id=894726741]
+custom_minimum_size = Vector2(78, 78)
+color = Color(1, 0.75686276, 1, 1)
+script = ExtResource("1_4v6ba")
+
+[node name="filter" type="ColorRect" parent="." unique_id=663438699]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0.6039216, 1)
+
+[connection signal="gui_input" from="filter" to="." method="_on_filter_gui_input"]
