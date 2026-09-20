@@ -6,11 +6,6 @@
 [ext_resource type="Script" uid="uid://ddr22p1hpd1q7" path="res://scripts/GeneratePath.cs" id="4_b8iy7"]
 [ext_resource type="Script" uid="uid://h73bjyg6i3v2" path="res://scripts/ChessBot.cs" id="5_jqlde"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_efmwq"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mcijj"]
-bg_color = Color(1, 1, 1, 1)
-
 [node name="GUI" type="Control" unique_id=639314337]
 layout_mode = 3
 anchors_preset = 15
@@ -52,15 +47,6 @@ theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 columns = 8
 
-[node name="Button" type="Button" parent="." unique_id=565478085]
-layout_mode = 0
-offset_left = 797.0
-offset_top = 78.0
-offset_right = 986.0
-offset_bottom = 145.0
-text = "spawn"
-icon = SubResource("ViewportTexture_efmwq")
-
 [node name="bitboard" type="Node" parent="." unique_id=1216869593]
 script = ExtResource("2_mfius")
 
@@ -72,24 +58,3 @@ script = ExtResource("4_b8iy7")
 
 [node name="ChessBot" type="Node" parent="." unique_id=206061886]
 script = ExtResource("5_jqlde")
-
-[node name="Button2" type="Button" parent="." unique_id=189184929]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -26.0
-offset_top = -64.0
-offset_right = 26.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_mcijj")
-text = "Start
-"
-
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]

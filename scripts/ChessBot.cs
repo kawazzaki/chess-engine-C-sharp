@@ -67,7 +67,7 @@ public partial class ChessBot : Node
 	public int[] FindNextMove(bool botIsBlack)
 	{
 		searchCounter = 0;
-		maxDepth = 4;
+		maxDepth = 3;
 
 
 		List<DataHandlerCs.Move> legalMoves = currentboard.GenerateLegalMoves(botIsBlack);
@@ -94,7 +94,7 @@ public partial class ChessBot : Node
 		int[] nextMove = { currentMove.From, currentMove.To };
 		currentboard.MakeMove(currentMove, botIsBlack);
 
-		// NEW: check if the opponent (whoever moves next) is now checkmated
+		// is now checkmated
 		if (currentboard.IsCheckmate(!botIsBlack))
 		{
 			GD.Print("Checkmate!");

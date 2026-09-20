@@ -37,8 +37,9 @@ func _ready() -> void:
 	piece_array.resize(64)
 	piece_array.fill(null)
 	
-	#start game
+	await get_tree().process_frame
 	reset_game()
+	
 	
 func create_slot():
 	var new_slot : Slot = slot_scene.instantiate()
